@@ -1,0 +1,51 @@
+1.Install MySQL Workbench on your computer, connect to the local MySQL server, and take a screenshot of the default databases shown in the Schemas panel.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+2.Create a new database called InstaClone in MySQL Workbench, then create a table named Users with columns: user_id (INT, primary key), username (VARCHAR), email (VARCHAR), and followers_count (INT).
+
+create database instaclone;
+
+use instaclone;
+create table users(
+	user_id int primary key,
+    username varchar(50),
+    email varchar(40),
+    followers_count int
+);
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+3.Insert 3 sample users into the Users table you created, using realistic Instagram-style usernames and follower counts.
+
+insert into users values
+(1, 'travel_with_riya', 'riya@gmail.com', 1250),
+(2, 'tech_by_rahul', 'rahul@gmail.com', 3480),
+(3, 'foodie_diary', 'foodie@gmail.com', 2150);
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+4.Create another table in the InstaClone database called Posts with columns: post_id (INT, primary key), user_id (INT), caption (VARCHAR), and post_date (DATE). Add a foreign key from Posts.user_id to Users.user_id to establish a relationship.
+
+create table posts(
+	post_id int primary key,
+    user_id int,
+    caption varchar(100),
+    post_date date,
+    foreign key (user_id) references users(user_id)
+);
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+5.Write a short comparison (3-4 lines each) of MySQL, PostgreSQL, Oracle, and SQLite, focusing on where each one is commonly used (for example: web apps, mobile apps, enterprise systems, etc.).
+1. MySQL
+MySQL is widely used for web applications and websites.
+It is commonly used with PHP, WordPress, and other web technologies.
+
+2. PostgreSQL
+PostgreSQL is an advanced open-source relational database.
+It is commonly used for web applications, data analytics, and applications requiring complex queries.
+
+3. Oracle
+Oracle Database is mainly used in large enterprise systems.
+It is common in banks, government organizations, and large companies.
+
+4. SQLite
+SQLite is a lightweight database that does not require a separate database server.
+It is commonly used in mobile apps, desktop applications, and embedded systems.

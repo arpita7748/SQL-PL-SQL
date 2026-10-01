@@ -1,0 +1,111 @@
+1.Create a SQL script to insert a new order into an Orders table, then use COMMIT to save the transaction and verify that the new order persists after reconnecting to the database.
+
+start transaction;
+insert into orders values (7,104,'2026-09-30');
+commit;
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2.Simulate a Zomato-style food order process: insert two new items into an OrderItems table, then use ROLLBACK to undo the changes before committing. Check that no new items remain in the table after rollback.
+
+create table orderitems(
+    item_id int primary key,
+    order_id int,
+    item_name varchar(50),
+    quantity int
+);
+
+insert into orderitems values
+(1,101,"pizza",1);
+
+insert into orderitems values
+(2,101,"burger",2);
+
+rollback; 
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+3.In a Flipkart-like shopping cart scenario, use SAVEPOINT to mark a point after adding a product to the Cart table, add another product, then use ROLLBACK TO SAVEPOINT to undo only the last addition. Show the final contents of the Cart table.
+
+start transaction;
+insert into cart values
+(1,101,"laptop",50000);
+
+savepoint product_added;
+
+insert into cart values
+(2,101,"mouse",1000);
+
+rollback to savepoint product_added;
+commit;
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+4.Write a trigger on a Wallet table that automatically deducts the purchase amount from the user's balance whenever a new transaction is inserted, similar to how Paytm updates wallet balance after a payment.
+
+create table wallet(
+	user_id int primary key,
+    balance decimal(10,2)
+);
+
+insert into wallet values
+(101,5000);
+
+create table transactions(
+	t_id int primary key,
+    user_id int,
+    amount decimal(10,2)
+);
+
+
+DELIMITER //
+
+CREATE TRIGGER deduct_balance
+AFTER INSERT
+ON transactions
+FOR EACH ROW
+BEGIN
+    UPDATE Wallet
+    SET balance = balance - new.amount
+    WHERE user_id = NEW.user_id;
+END //
+
+DELIMITER ;
+
+insert into transactions values
+(1,101,1200);
+
+select * from wallet;
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+5.Use ChatGPT to generate a SQL test scenario where a trigger incorrectly updates a user's balance after an expense entry. Paste the scenario and your corrected trigger code, explaining how you fixed the error.<br><br><em><strong>Hint:</strong> Ask ChatGPT for a buggy trigger example and a test case that exposes the bug.</em>
+
+*incorrect trigger:
+
+DELIMITER //
+
+CREATE TRIGGER buggy_trigger
+AFTER INSERT
+ON transactions
+FOR EACH ROW
+BEGIN
+    UPDATE Wallet
+    SET balance = balance + new.amount
+    WHERE user_id = new.user_id;
+END //
+
+DELIMITER ;
+
+*correct trigger:
+
+DELIMITER //
+
+CREATE TRIGGER correct_trigger
+AFTER INSERT
+ON transactions
+FOR EACH ROW
+BEGIN
+    UPDATE Wallet
+    SET balance = balance - new.amount
+    WHERE user_id = new.user_id;
+END //
+
+DELIMITER ;
+
+The mistake was using + instead of - in the trigger.I corrected it to subtract the purchase amount from the wallet balance.
